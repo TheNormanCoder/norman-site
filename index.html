@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -42,14 +42,16 @@
 
   <script>
     const lines = [
-      "norman@portfolio:~$ echo \"Accesso autorizzato: benvenuto nella zona dev\"",
-      "Accesso autorizzato: benvenuto nella zona dev",
-      "norman@portfolio:~$ echo \"Cloud, Microservizi e Architetture Moderne\"",
-      "Cloud, Microservizi e Architetture Moderne",
+      "norman@portfolio:~$ echo \"Access granted: welcome to the dev zone\"",
+      "Access granted: welcome to the dev zone",
+      "norman@portfolio:~$ echo \"Cloud, Microservices & Modern Architectures\"",
+      "Cloud, Microservices & Modern Architectures",
       "norman@portfolio:~$ open https://github.com/TheNormanCoder",
-      "(apertura repository GitHub...)",
+      "(opening GitHub repository...)",
       "norman@portfolio:~$ open https://linkedin.com/in/normanwilliambillanova",
-      "(apertura profilo LinkedIn...)"
+      "(opening LinkedIn profile...)",
+      "norman@portfolio:~$ open ./NORMAN_BILLANOVA_CV_EN_watermarked.pdf",
+      "(downloading CV...)"
     ];
 
     let i = 0;
@@ -64,10 +66,11 @@
       } else {
         // Aggiunge i link alla fine dopo la "shell"
         const links = document.createElement("div");
-        links.className = "mt-4 flex gap-4";
+        links.className = "mt-4 flex flex-wrap gap-4";
         links.innerHTML = `
           <a href="https://github.com/TheNormanCoder" target="_blank" class="bg-white text-black px-4 py-2 rounded hover:bg-gray-300 transition">GitHub</a>
           <a href="https://linkedin.com/in/normanwilliambillanova" target="_blank" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500 transition">LinkedIn</a>
+          <a href="NORMAN_BILLANOVA_CV_EN_watermarked.pdf" target="_blank" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-500 transition">📄 Curriculum Vitae</a>
         `;
         terminal.appendChild(links);
       }
