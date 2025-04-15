@@ -12,9 +12,10 @@
   <style>
     body {
       font-family: 'Fira Code', monospace;
-      background: linear-gradient(135deg, #ff00ff, #ccff00); /* rosa fluo e lime */
+      background: linear-gradient(135deg, #ff00ff, #ccff00);
       animation: gradientShift 10s ease infinite;
       background-size: 400% 400%;
+      padding: 1rem;
     }
 
     @keyframes gradientShift {
@@ -29,11 +30,13 @@
       padding: 2rem;
       border-radius: 0.75rem;
       box-shadow: 0 0 15px #00ff00;
+      width: 100%;
       max-width: 700px;
       margin: auto;
       font-size: 1rem;
       min-height: 200px;
       white-space: pre-wrap;
+      box-sizing: border-box;
     }
   </style>
 </head>
@@ -66,9 +69,8 @@
         terminal.appendChild(span);
         setTimeout(printLine, 1200);
       } else {
-        // Aggiunge i link alla fine dopo la "shell"
         const links = document.createElement("div");
-        links.className = "mt-4 flex flex-wrap gap-4";
+        links.className = "mt-4 flex flex-col sm:flex-row flex-wrap gap-4";
         links.innerHTML = `
           <a href="https://github.com/TheNormanCoder" target="_blank" class="bg-white text-black px-4 py-2 rounded hover:bg-gray-300 transition">GitHub</a>
           <a href="https://linkedin.com/in/normanwilliambillanova" target="_blank" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500 transition">LinkedIn</a>
