@@ -25,25 +25,81 @@
     }
 
     .terminal {
-      background-color: rgba(0, 0, 0, 0.85);
+      background-color: rgba(0, 0, 0, 0.9);
       color: #00ff00;
       padding: 2rem;
-      border-radius: 0.75rem;
-      box-shadow: 0 0 15px #00ff00;
+      border-radius: 1rem;
+      box-shadow: 0 0 20px 5px rgba(0, 255, 0, 0.6);
       width: 100%;
       max-width: 700px;
       margin: auto;
       font-size: 1rem;
-      min-height: 200px;
+      min-height: 250px;
       white-space: pre-wrap;
       box-sizing: border-box;
+      position: relative;
+      animation: pulseShadow 3s ease-in-out infinite;
+    }
+
+    @keyframes pulseShadow {
+      0%, 100% {
+        box-shadow: 0 0 20px 5px rgba(0, 255, 0, 0.6);
+      }
+      50% {
+        box-shadow: 0 0 30px 10px rgba(0, 255, 0, 0.9);
+      }
+    }
+
+    .blinker {
+      display: inline-block;
+      width: 1ch;
+      background: #00ff00;
+      animation: blink 1s steps(2, start) infinite;
+    }
+
+    @keyframes blink {
+      to { background: transparent; }
+    }
+
+    .command-input {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 1rem;
+      align-items: center;
+    }
+
+    .command-input input {
+      background-color: transparent;
+      border: none;
+      border-bottom: 1px solid #00ff00;
+      color: #00ff00;
+      width: 100%;
+      font-family: 'Fira Code', monospace;
+      outline: none;
     }
   </style>
 </head>
 <body class="min-h-screen flex items-center justify-center">
-  <div class="terminal" id="terminal"></div>
+  <div class="terminal" id="terminal">
+    <div id="content"></div>
+    <div class="command-input">
+      <span>norman@portfolio:~$</span>
+      <input type="text" id="cmd" placeholder="type a command (about, projects, clear, reset)" />
+    </div>
+    <div><span class="blinker"></span></div>
+  </div>
 
   <script>
+    const terminalContent = document.getElementById("content");
+    const cmdInput = document.getElementById("cmd");
+    const linksHTML = `
+      <div class="mt-4 flex flex-col sm:flex-row flex-wrap gap-4">
+        <a href="https://github.com/TheNormanCoder" target="_blank" class="bg-white text-black px-4 py-2 rounded hover:bg-gray-300 transition">GitHub</a>
+        <a href="https://linkedin.com/in/normanwilliambillanova" target="_blank" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500 transition">LinkedIn</a>
+        <a href="NORMAN_BILLANOVA_CV_EN_watermarked.pdf" target="_blank" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-500 transition">📄 Curriculum Vitae</a>
+      </div>
+    `;
+
     const lines = [
       "norman@portfolio:~$ echo \"Access granted: welcome to the dev zone\"",
       "Access granted: welcome to the dev zone",
@@ -56,29 +112,75 @@
       "norman@portfolio:~$ open https://linkedin.com/in/normanwilliambillanova",
       "(opening LinkedIn profile...)",
       "norman@portfolio:~$ open ./NORMAN_BILLANOVA_CV_EN_watermarked.pdf",
-      "(downloading CV...)"
+      "(downloading CV...)",
+      "norman@portfolio:~$ help",
+      "Available commands:",
+      "  - about     → Short bio",
+      "  - projects  → GitHub portfolio",
+      "  - clear     → Clear terminal",
+      "  - reset     → Restore initial view"
     ];
 
+    const commands = {
+      reset: () => {
+        terminalContent.innerHTML = "";
+        i = 0;
+        printLine();
+      },
+      about: [
+        "norman@portfolio:~$ about",
+        "Norman William Billanova is a Senior Java Developer with a passion for scalable backend systems and clean architecture."
+      ],
+      projects: [
+        "norman@portfolio:~$ projects",
+        "- Conquer The World 🌍",
+        "- Build a coffee-powered CI/CD pipeline ☕",
+        "- Debug the Matrix 🕶️",
+        "- Automate the automation of automation 🤖"
+      ],
+      clear: () => {
+        terminalContent.innerHTML = "\n(norman@portfolio:~ terminal cleared)\n";
+        terminalContent.insertAdjacentHTML("beforeend", linksHTML);
+      }
+    };
+
     let i = 0;
-    const terminal = document.getElementById("terminal");
 
     function printLine() {
       if (i < lines.length) {
+        cmdInput.disabled = true;
         const span = document.createElement("span");
         span.textContent = lines[i++] + "\n";
-        terminal.appendChild(span);
+        terminalContent.appendChild(span);
         setTimeout(printLine, 1200);
       } else {
-        const links = document.createElement("div");
-        links.className = "mt-4 flex flex-col sm:flex-row flex-wrap gap-4";
-        links.innerHTML = `
-          <a href="https://github.com/TheNormanCoder" target="_blank" class="bg-white text-black px-4 py-2 rounded hover:bg-gray-300 transition">GitHub</a>
-          <a href="https://linkedin.com/in/normanwilliambillanova" target="_blank" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500 transition">LinkedIn</a>
-          <a href="NORMAN_BILLANOVA_CV_EN_watermarked.pdf" target="_blank" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-500 transition">📄 Curriculum Vitae</a>
-        `;
-        terminal.appendChild(links);
+        terminalContent.insertAdjacentHTML("beforeend", linksHTML);
+        cmdInput.disabled = false;
+        cmdInput.focus();
       }
     }
+
+    cmdInput.addEventListener("keypress", function (e) {
+      if (e.key === "Enter") {
+        const input = cmdInput.value.trim();
+        if (commands[input]) {
+          if (typeof commands[input] === 'function') {
+            commands[input]();
+          } else {
+            commands[input].forEach(line => {
+              const span = document.createElement("span");
+              span.textContent = line + "\n";
+              terminalContent.appendChild(span);
+            });
+          }
+        } else {
+          const span = document.createElement("span");
+          span.textContent = `Command not found: ${input}\n`;
+          terminalContent.appendChild(span);
+        }
+        cmdInput.value = "";
+      }
+    });
 
     printLine();
   </script>
