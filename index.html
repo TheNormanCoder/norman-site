@@ -16,6 +16,7 @@
       animation: gradientShift 10s ease infinite;
       background-size: 400% 400%;
       padding: 1rem;
+      margin: 0;
     }
 
     @keyframes gradientShift {
@@ -63,23 +64,25 @@
 
     .command-input {
       display: flex;
+      flex-wrap: wrap;
       gap: 0.5rem;
       margin-top: 1rem;
       align-items: center;
     }
 
     .command-input input {
+      flex: 1 1 auto;
       background-color: transparent;
       border: none;
       border-bottom: 1px solid #00ff00;
       color: #00ff00;
-      width: 100%;
       font-family: 'Fira Code', monospace;
       outline: none;
+      min-width: 200px;
     }
   </style>
 </head>
-<body class="min-h-screen flex items-center justify-center">
+<body class="min-h-screen flex items-center justify-center px-4">
   <div class="terminal" id="terminal">
     <div id="content"></div>
     <div class="command-input">
